@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
+import {MatPaginator} from '@angular/material/paginator';
 import { UserService } from '../../module-service/user.service';
-import { MatPaginator, MatTableDataSource } from '@angular/material'
+import { MatTableDataSource } from '@angular/material'
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { EditUserService } from '../all-user/edit-user.service';
 import { StorageService } from '../../shared/storage.service';

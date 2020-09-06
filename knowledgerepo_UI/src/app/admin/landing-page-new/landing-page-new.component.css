@@ -14,19 +14,34 @@
     width: 250px;
     -webkit-transition: width .5s;
     transition: width .5s;
-    height: 700px !important;
+    min-height: 120vh !important;
     color: #f2f2f2;
     text-align: center;
     text-decoration: none;
     font-size: 17px;
-    padding: 0px 16px;
+    padding: 0px 3px;
     
         
 }
 a{
     cursor: pointer;
 }
-.material-icons{
+/* .material-icons{
+    margin: 15px;
+    width: 20px;
+    color: #fff;
+    font-size: 30px;
+    vertical-align: middle !important;
+    margin-bottom: 15px;
+    cursor: pointer;
+} */
+
+#mat-card-style{
+    margin-bottom: 15px;
+    border: 0.1px solid #b7c4ee;
+}
+
+.mat-side-icons{
     margin: 15px;
     width: 20px;
     color: #fff;
@@ -60,3 +75,18 @@ mat-card-title{
 ul {
     list-style-type: square;
 }
+#logout{
+    margin-top: 9px;
+    outline: none;
+    margin-left: -21px;
+}
+h4{
+    color:white;
+    text-align: center;
+    line-height: 2.2;
+}
+/* #DashBoard{
+  display: block;
+  height: 3%;
+  
+} */

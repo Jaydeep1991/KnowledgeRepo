@@ -1,23 +1,33 @@
 <div class="component">
     <div class="row"></div>
     <div class="row secondRow">
-        <div class="col-md-10">
+        <div class="col-md-2">
         </div>
+        <div class="col-md-8"></div>
         <div class="col-md-1">
-            <button mat-raised-button color="primary">
+            <button mat-raised-button color="primary" (click)="signUp()" *ngIf="!isLoggedIn">
                 Sign Up
             </button>
         </div>
         <div class="col-md-1">
-            <button mat-raised-button color="primary">
+            <button mat-raised-button color="primary" (click)="signIn()" *ngIf="!isLoggedIn">
                 Login
+            </button>
+            <button mat-raised-button color="warn" *ngIf="isLoggedIn" (click)="logout()" id="logout">
+                Logout
             </button>
         </div>
     </div>
     <div class="row">
         <div class="col-md-2 sidenav">
+            <div class="side-left" *ngIf="isLoggedIn" (click)="dashboard()">
+                <mat-icon class="mat-side-icons">dashboard</mat-icon>
+                <span>DashBoard</span>
+                <br>
+            </div>
+            <br *ngIf="isLoggedIn">
             <div class="side-left" (click)="showClient()">
-                <mat-icon>work</mat-icon>
+                <mat-icon class="mat-side-icons">work</mat-icon>
                 <span>Client</span>
                 <br>
             </div>
@@ -30,12 +40,12 @@
             </div>
             <br>
             <div class="side-left" (click)="showTopics()">
-                <mat-icon>dns</mat-icon>
+                <mat-icon class="mat-side-icons">dns</mat-icon>
                 <span>Topics</span>
                 <br>
             </div>
             <div *ngIf="showListTopic">
-                <div *ngFor="let topic of listTopic" (click)="getTopicId(topic.topicsId)">
+                <div *ngFor="let topic of listTopic" (click)="getTopicId(topic.topicName)">
                     <ul>
                         <li>{{topic.topicName}}</li>
                     </ul>
@@ -43,18 +53,17 @@
             </div>
         </div>
 
-        <!-- <span class="error" *ngIf="error">
-            {{errorMessage}}
-        </span> -->
-        <div class="col-md-10" style="margin-top: 5px;">
-
-            <mat-card>
+        <div class="col-md-10" style="margin-top: 5px;" (click)="closeErrorFromDiv()">
+            <span class="error" *ngIf="error">
+                {{errorMessage}}
+            </span>
+            <mat-card (click)="closeErrorFromCard()">
                 <mat-card-title>Top Questions</mat-card-title>
                 <div class="row">
                     <div class="col-md-10"></div>
                     <div class="col-md-2">
                         <mat-card-actions>
-                            <button mat-raised-button color="accent" (click)="addQuestion()">Ask Question</button>
+                            <button mat-raised-button color="accent" (click)="askQuestion()"  (click)="checkPermission()">Ask Question</button>
                         </mat-card-actions>
                     </div>
                 </div>
@@ -64,14 +73,121 @@
                     <div class="col-md-10">
                         <mat-card>
                             <mat-card-subtitle>
+                                <app-msg-alert [setMessage]="setMessage" *ngIf="addquesNoError"></app-msg-alert>
+                                <app-error-alert [setMessage]="setMessage" *ngIf="addquesError"></app-error-alert>
+                            </mat-card-subtitle>
+                            <mat-card-subtitle>
                                 Ask a public Question
                             </mat-card-subtitle>
                             <mat-card-content>
                                 <form [formGroup]="addquestionData" (ngSubmit)="onsubmit()">
-                                    
+                                    <quill-editor [placeholder]="placeholder " formControlName="editor"
+                                        [modules]="config" [styles]="editorStyle"
+                                        (onContentChanged)="maxlength($event)">
+                                    </quill-editor>
+                                    <button mat-raised-button color="primary" type="submit"
+                                        [disabled]="!addquestionData.valid">
+                                        <mat-icon>save</mat-icon>
+                                        Save
+                                    </button>
+                                    <button mat-raised-button color="warn" type="reset" style="margin-left: 5px;">
+                                        <mat-icon>clear</mat-icon>
+                                        Cancel
+                                    </button>
                                 </form>
                             </mat-card-content>
                         </mat-card>
+                    </div>
+                </div>
+                <div class="row" style="height: 10px;">
+                </div>
+                <div class="row">
+                    <div class="col-md-10">
+                        <mat-card *ngFor="let q of showAllQuestionList;let k=index" id="mat-card-style">
+                            <mat-card-subtitle *ngIf="answer == k">
+                                <div *ngIf="closeErrorDiv">
+                                    <app-msg-alert [setMessage]="setMessage"></app-msg-alert>
+                                    <app-error-alert [setMessage]="setMessage"></app-error-alert>
+                                </div>
+                            </mat-card-subtitle>
+                            <mat-card-content>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <p [innerHTML]="q.question"></p>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span>Asked By:</span>
+                                        <p>{{q.askedBy}}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-2">
+                                        {{q.questionDate|date}}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button mat-raised-button color="primary" (click)="close()"
+                                            (click)="giveAnswer(k)" (click)="checkPermission1()">Answer</button>
+                                    </div>
+                                </div>
+                                <div *ngIf="openAnswer">
+                                    <div *ngIf="closediv">
+                                        <div class="row" *ngIf="answer == k">
+                                            <div class="col-md-10">
+                                                <form [formGroup]="answerData"
+                                                    (ngSubmit)="onAnswerSubmit(q.questionId)">
+                                                    <quill-editor [modules]="config" [styles]="editorStyle"
+                                                        (onContentChanged)="maxlength($event)"
+                                                        formControlName="answereditor" [placeholder]="placeholder">
+                                                    </quill-editor>
+                                                    <button mat-raised-button color="primary" type="submit"
+                                                        [disabled]="!answerData.valid">
+                                                        <mat-icon>save</mat-icon>
+                                                        Save
+                                                    </button>
+                                                    <button mat-raised-button color="warn" type="reset"
+                                                        style="margin-left: 5px;">
+                                                        <mat-icon>clear</mat-icon>
+                                                        Cancel
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="height: 5px;"></div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <span *ngIf="q.answer!=null">Answer:</span>
+                                        <p [innerHTML]="q.answer"></p>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span *ngIf="q.answerdBy!=null">Answered By:</span>
+                                        <p>{{q.answerdBy}}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-2">
+                                        {{q.answeredDate|date}}
+                                    </div>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <mat-paginator [pageSizeOptions]="[2,3]"></mat-paginator>
                     </div>
                 </div>
             </mat-card>
