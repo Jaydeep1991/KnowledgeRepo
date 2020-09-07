@@ -3,7 +3,8 @@
     <div class="row secondRow">
         <div class="col-md-2">
         </div>
-        <div class="col-md-8"></div>
+        <div class="col-md-8">           
+        </div>
         <div class="col-md-1">
             <button mat-raised-button color="primary" (click)="signUp()" *ngIf="!isLoggedIn">
                 Sign Up
@@ -103,7 +104,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-10">
-                        <mat-card *ngFor="let q of showAllQuestionList;let k=index" id="mat-card-style">
+                        <mat-card *ngFor="let q of observableData|async;let k=index" id="mat-card-style">
                             <mat-card-subtitle *ngIf="answer == k">
                                 <div *ngIf="closeErrorDiv">
                                     <app-msg-alert [setMessage]="setMessage"></app-msg-alert>
@@ -187,7 +188,7 @@
                                 </div>
                             </mat-card-content>
                         </mat-card>
-                        <mat-paginator [pageSizeOptions]="[2,3]"></mat-paginator>
+                        <mat-paginator [pageSizeOptions]="[2]"></mat-paginator>
                     </div>
                 </div>
             </mat-card>

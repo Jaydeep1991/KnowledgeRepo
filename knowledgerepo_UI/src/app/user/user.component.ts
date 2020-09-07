@@ -3,6 +3,7 @@ import { StorageService } from '../shared/storage.service';
 import { ShowService } from './show.service'
 import { Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -33,7 +34,8 @@ export class UserComponent implements OnInit {
 
   constructor(
     private _storage: StorageService,
-    private _userService: ShowService
+    private _userService: ShowService,
+    private route:Router
   ) { }
 
   ngOnInit() {
@@ -59,6 +61,9 @@ export class UserComponent implements OnInit {
     this.showDetails=false;
     this.loadShowComponent = true;
 
+  }
+  backImage(){
+    this.route.navigate(['/']);
   }
   UploadComponent() {
     this.loadSearchComponent = false;

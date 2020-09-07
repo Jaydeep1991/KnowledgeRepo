@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { StorageService } from 'src/app/shared/storage.service';
 import { QuestionService } from '../QuestionService/question.service';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Observable } from 'rxjs';
 
 
 export class Company {
@@ -67,6 +68,7 @@ export class LandingPageNewComponent implements OnInit {
   public addquesNoError:boolean=false;
   public addquesError:boolean=false;
   public closeErrorDiv:boolean=false;
+  public observableData: Observable<any>;
   
   public datasource:any;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -108,6 +110,7 @@ export class LandingPageNewComponent implements OnInit {
         this.showAllQuestionList = resp;
         this.datasource=new MatTableDataSource(resp);      
         this.datasource.paginator=this.paginator;
+        this.observableData = this.datasource.connect();
       },
       err => {
         this.errorMessage = "'Server Error /Server Unreachable!";
